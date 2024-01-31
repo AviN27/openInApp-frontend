@@ -6,6 +6,7 @@ const Content = () => {
 
     const [files, setFiles] = useState(null)
     const [parsed, setParsed] = useState([]);
+    const [upload, setUpload] = useState(false);
     const inputRef = useRef(null)
     let csvFile = null
     
@@ -27,6 +28,7 @@ const Content = () => {
             complete: function(results) {
                 console.log("Finished:", results.data);
                 setParsed(results.data);
+                setUpload(true);
             }
         });
     } 
@@ -192,19 +194,19 @@ const Content = () => {
             </div>
     
             {/* Right Content Area */}
-            <div className='flex flex-col w-5/6 items-center'>
-                <div className="w-full p-8">
-                    <div className="flex justify-between items-center mb-4">
+            <div className='flex flex-col lg:w-5/6 items-center bg-[#F8FAFF]'>
+                <div className="w-full p-8 bg-white">
+                    <div className="flex justify-between items-center bg-white">
                         <p className="hidden lg:block font-montserrat text-xl font-bold text-black">Upload CSV</p>
                         <div className='flex flex-row'>
                             <div className="lg:hidden flex flex-row justify-center">
                                 <div className="top-0 left-0 p-3">
                                     <img src="/Subtract.svg" alt="Logo1" />
                                 </div>
-                                <p className="font-montserrat pt-5 font-bold text-black text-xl">Base</p>
+                                <p className="font-montserrat lg:pt-5 pt-4 font-bold text-black text-xl">Base</p>
                             </div>
                             
-                            <div className="flex flex-row-reverse ml-24">
+                            <div className="flex flex-row-reverse lg:ml-24 ml-44 mt-4">
                                 <img
                                     src="/image 1.png"
                                     alt="Profile Picture"
@@ -215,11 +217,17 @@ const Content = () => {
                                 </span>
                             </div>
                         </div>
+
                     </div>
                 </div>
-                <div className='flex flex-col justify-center items-center box-border rounded-lg bg-white w-6/12 h-96 mt-16'>
+
+                <div className='lg:hidden w-full p-7 m-5'>
+                    <p className="lg:hidden font-montserrat text-xl font-bold text-black">Upload CSV</p>
+                </div>
+
+                <div className='flex flex-col justify-center items-center box-border rounded-lg bg-white lg:w-6/12 lg:h-96 lg:mt-16'>
                     <div 
-                        className='box-border border-2 border-dotted border-gray-500 w-5/6 h-3/5 p-16 text-center rounded-lg'
+                        className='box-border border-2 border-dotted border-gray-500 w-5/6 h-3/5 lg:p-16 py-16 text-center rounded-lg'
                         onDragEnter={handleDragOver}
                         onDragOver={handleDragOver}
                         onDrop={handleDrop}
@@ -227,11 +235,11 @@ const Content = () => {
                         <img
                             src="/MOE1.svg"
                             alt="Profile Picture"
-                            className="pl-48"
+                            className="lg:pl-48 pl-28"
                         />
 
                         {!files ? 
-                        <p className="text-sm font-light text-gray-500 pt-3 text-center">
+                        <p className="hidden lg:block text-sm font-light text-gray-500 pt-3 text-center">
                             <input
                                 type='file'
                                 onChange={(event) => setFiles(event.target.files)}
@@ -240,17 +248,36 @@ const Content = () => {
                             />
                             Drop your excel sheet here or <a onClick={() => inputRef.current.click()} className="font-medium text-blue-400 hover:underline">Browse</a>
                         </p> :
-                        <div className='text-center'>
+                        <div className='hidden lg:block text-center'>
                             <p className="text-sm font-light text-gray-500 pt-3 text-center">
                                 {files[0].name}
                             </p>
-                            <a onClick={() => setFiles(null) && setParsed(null)} className="text-sm font-medium text-red-400 hover:underline">Remove</a>
+                            <a onClick={() => setFiles(null) && setParsed(null) && setUpload(false)} className="text-sm font-medium text-red-400 hover:underline">Remove</a>
                         </div>
                         }
 
+                        {!files ? 
+                            <p className="lg:hidden text-sm font-light text-gray-500 pt-3 text-center">
+                                <input
+                                    type='file'
+                                    onChange={(event) => setFiles(event.target.files)}
+                                    hidden
+                                    ref={inputRef}
+                                />
+                                Drop your excel sheet <a onClick={() => inputRef.current.click()} className="font-medium text-blue-400 hover:underline">here</a>
+                            </p> :
+                            <div className='lg:hidden text-center'>
+                                <p className="text-sm font-light text-gray-500 pt-3 text-center">
+                                    {files[0].name}
+                                </p>
+                                <a onClick={() => setFiles(null) && setParsed(null) && setUpload(false)} className="lg:text-sm font-medium text-red-400 hover:underline">Remove</a>
+                            </div>
+                        }
+
+
                     </div>
                     <div className='pt-4'>
-                        <button onClick={handleUpload} disabled={!files} className='bg-regal-blue w-80 rounded-md p-2 text-white disabled:bg-regal-blue-light'>
+                        <button onClick={handleUpload} disabled={!files || upload} className='bg-regal-blue w-80 rounded-md p-2 text-white disabled:bg-regal-blue-light'>
                             <img className="inline mr-2 mb-1"  src='/upload.svg' alt='Upload'/>
                             Upload
                         </button>
@@ -259,13 +286,13 @@ const Content = () => {
 
                 <div className='w-full'>
                 {Array.isArray(parsed) && parsed.length > 0 && (
-                    <p className='text-3xl font-montserrat text-black p-5 m-10 '>Uploads</p>
+                    <p className='lg:text-3xl text-xl font-montserrat text-black font-bold p-5 m-10 '>Uploads</p>
                 )}
                 </div>
 
                 <div className='font-montserrat'>
                     {Array.isArray(parsed) && parsed.length > 0 && (
-                        <div className='text-black p-10'>
+                        <div className='text-black lg:p-10'>
                             <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
                                 <table className="w-full text-md text-left rtl:text-right text-gray-500 bg-light-gray-200 border-separate border-spacing-4 border">
                                 <thead className="text-sm text-gray-700 camelCase bg-light-gray-200">
