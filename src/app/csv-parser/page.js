@@ -4,6 +4,8 @@ import { React, useState, useRef, useEffect } from 'react';
 import Papa from 'papaparse';
 const Content = () => {
 
+    const acceptableCSVFileTypes = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel, .csv";
+
     const [files, setFiles] = useState(null)
     const [parsed, setParsed] = useState([]);
     const [upload, setUpload] = useState(false);
@@ -245,6 +247,7 @@ const Content = () => {
                                 onChange={(event) => setFiles(event.target.files)}
                                 hidden
                                 ref={inputRef}
+                                accept={acceptableCSVFileTypes}
                             />
                             Drop your excel sheet here or <a onClick={() => inputRef.current.click()} className="font-medium text-blue-400 hover:underline">Browse</a>
                         </p> :
